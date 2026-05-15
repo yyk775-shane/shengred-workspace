@@ -1,0 +1,1548 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深紅 · 工作台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #8B0000;
+  --red-dark: #5C0000;
+  --red-light: #B22222;
+  --gold: #C9A84C;
+  --gold-light: #E8C96E;
+  --gold-pale: #F5E9C8;
+  --ink: #1A1614;
+  --ink-mid: #3D3330;
+  --muted: #7A706C;
+  --surface: #FAFAF7;
+  --surface-2: #F2EDE6;
+  --border: rgba(139,0,0,0.12);
+  --border-gold: rgba(201,168,76,0.25);
+  --shadow: 0 2px 16px rgba(139,0,0,0.08);
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans TC', system-ui, sans-serif;
+  background: var(--surface);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── LOGIN SCREEN ── */
+#login-screen {
+  position: fixed; inset: 0;
+  background: linear-gradient(145deg, #1A0000 0%, #3D0000 40%, #1A0000 100%);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.6s ease;
+}
+#login-screen.hidden { opacity: 0; pointer-events: none; }
+
+.login-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 20px;
+  padding: 52px 48px;
+  text-align: center;
+  width: 380px;
+  backdrop-filter: blur(12px);
+}
+.login-logo {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.06em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.login-sub {
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 0.25em;
+  color: rgba(201,168,76,0.6);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.login-slogan {
+  font-size: 13px;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 40px;
+  letter-spacing: 0.05em;
+}
+.login-divider {
+  width: 40px; height: 1px;
+  background: rgba(201,168,76,0.4);
+  margin: 0 auto 32px;
+}
+
+#google-signin-btn {
+  width: 100%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(201,168,76,0.4);
+  color: rgba(255,255,255,0.85);
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 14px;
+  padding: 13px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: background 0.2s, border-color 0.2s;
+  letter-spacing: 0.03em;
+}
+#google-signin-btn:hover {
+  background: rgba(201,168,76,0.15);
+  border-color: rgba(201,168,76,0.7);
+}
+
+.login-note {
+  margin-top: 20px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 0.04em;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--red-dark);
+  border-bottom: 1px solid rgba(201,168,76,0.2);
+  display: flex; align-items: center; gap: 0;
+  height: 56px;
+  padding: 0 24px;
+}
+
+.topbar-brand {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+  margin-right: 8px;
+}
+
+.topbar-tagline {
+  font-size: 11px;
+  color: rgba(201,168,76,0.5);
+  letter-spacing: 0.1em;
+  margin-right: auto;
+  padding-top: 2px;
+}
+
+nav.topbar-nav {
+  display: flex; align-items: center; gap: 2px;
+}
+
+.nav-btn {
+  background: none; border: none;
+  color: rgba(255,255,255,0.65);
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 13px;
+  padding: 6px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.nav-btn:hover, .nav-btn.active {
+  background: rgba(201,168,76,0.15);
+  color: var(--gold-light);
+}
+.nav-btn.active {
+  font-weight: 500;
+}
+
+.topbar-sep {
+  width: 1px; height: 20px;
+  background: rgba(201,168,76,0.2);
+  margin: 0 8px;
+}
+
+.user-chip {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(201,168,76,0.1);
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 20px;
+  padding: 4px 12px 4px 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.user-chip:hover { background: rgba(201,168,76,0.2); }
+.user-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600;
+  color: var(--red-dark);
+}
+.user-name {
+  font-size: 12px; color: rgba(255,255,255,0.8);
+  max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ── BRANCH BAR ── */
+.branch-bar {
+  background: var(--red);
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 24px;
+  height: 36px;
+}
+.branch-label { font-size: 11px; color: rgba(201,168,76,0.5); letter-spacing: 0.08em; margin-right: 4px; }
+.branch-btn {
+  background: none; border: 1px solid transparent;
+  color: rgba(255,255,255,0.55); font-family: 'Noto Sans TC', sans-serif;
+  font-size: 12px; padding: 3px 12px; border-radius: 14px; cursor: pointer;
+  transition: all 0.15s;
+}
+.branch-btn:hover { color: rgba(255,255,255,0.85); border-color: rgba(201,168,76,0.3); }
+.branch-btn.active {
+  background: rgba(201,168,76,0.18); border-color: rgba(201,168,76,0.45);
+  color: var(--gold-light); font-weight: 500;
+}
+
+/* ── MAIN LAYOUT ── */
+main { flex: 1; padding: 28px 28px 48px; max-width: 1280px; margin: 0 auto; width: 100%; }
+
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── DASHBOARD ── */
+.greeting-row {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 28px;
+}
+.greeting-text h2 {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 22px; font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.greeting-text p { font-size: 13px; color: var(--muted); }
+.date-chip {
+  background: var(--surface-2);
+  border: 1px solid var(--border-gold);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 12px; color: var(--muted);
+  text-align: right;
+}
+.date-chip strong { display: block; font-size: 15px; color: var(--ink); font-weight: 500; }
+
+/* STAT CARDS */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.stat-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--accent, var(--red));
+}
+.stat-label { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; margin-bottom: 8px; }
+.stat-value { font-size: 26px; font-weight: 600; color: var(--ink); line-height: 1; margin-bottom: 4px; }
+.stat-sub { font-size: 11px; color: var(--muted); }
+.stat-card.gold { --accent: var(--gold); }
+.stat-card.green { --accent: #4A7C59; }
+.stat-card.blue { --accent: #2E6DA4; }
+
+/* CONTENT GRID */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+}
+@media (max-width: 900px) { .content-grid { grid-template-columns: 1fr; } }
+
+/* SECTION CARD */
+.section-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.section-title {
+  font-size: 13px; font-weight: 600;
+  color: var(--ink); letter-spacing: 0.04em;
+}
+.section-action {
+  font-size: 12px; color: var(--red);
+  background: none; border: none; cursor: pointer;
+  font-family: 'Noto Sans TC', sans-serif;
+  padding: 4px 10px; border-radius: 6px;
+  transition: background 0.15s;
+}
+.section-action:hover { background: rgba(139,0,0,0.07); }
+
+/* TASK LIST */
+.task-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.task-item:last-child { border-bottom: none; }
+.task-item:hover { background: rgba(139,0,0,0.03); }
+.task-check {
+  width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px;
+  border: 1.5px solid rgba(139,0,0,0.3); border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.15s;
+}
+.task-check.done { background: var(--red); border-color: var(--red); }
+.task-check.done::after { content: '✓'; color: #fff; font-size: 10px; }
+.task-body { flex: 1; min-width: 0; }
+.task-msg { font-size: 13px; color: var(--ink); margin-bottom: 4px; line-height: 1.4; }
+.task-msg.done { text-decoration: line-through; color: var(--muted); }
+.task-meta { display: flex; gap: 8px; align-items: center; }
+.task-from { font-size: 11px; color: var(--muted); }
+.task-badge {
+  font-size: 10px; padding: 2px 7px; border-radius: 10px;
+  background: rgba(139,0,0,0.08); color: var(--red);
+  font-weight: 500;
+}
+.task-badge.urgent { background: rgba(220,50,50,0.1); color: #c0392b; }
+.task-badge.done { background: rgba(74,124,89,0.1); color: #4A7C59; }
+.task-time { font-size: 11px; color: rgba(0,0,0,0.3); margin-left: auto; white-space: nowrap; }
+
+.empty-state {
+  padding: 40px 20px; text-align: center;
+  color: var(--muted); font-size: 13px;
+}
+
+/* QUICK LINKS */
+.quick-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  padding: 16px;
+}
+.quick-btn {
+  background: var(--surface-2);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius);
+  padding: 14px 12px;
+  text-align: center;
+  cursor: pointer; transition: all 0.15s;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.quick-btn:hover { background: rgba(201,168,76,0.12); border-color: var(--gold); }
+.quick-icon { font-size: 22px; }
+.quick-label { font-size: 11px; color: var(--ink-mid); font-weight: 500; letter-spacing: 0.03em; }
+
+/* TODAY SCHEDULE */
+.schedule-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.schedule-item:last-child { border-bottom: none; }
+.schedule-time { font-size: 11px; color: var(--muted); min-width: 44px; padding-top: 2px; }
+.schedule-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); flex-shrink: 0; margin-top: 4px; }
+.schedule-text { font-size: 13px; color: var(--ink); line-height: 1.4; }
+.schedule-branch { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* ── TASK PAGE ── */
+.task-toolbar {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 20px; flex-wrap: wrap;
+}
+.task-tab {
+  background: none; border: 1px solid var(--border);
+  color: var(--muted); font-family: 'Noto Sans TC', sans-serif;
+  font-size: 12px; padding: 6px 14px; border-radius: 20px; cursor: pointer;
+  transition: all 0.15s;
+}
+.task-tab.active, .task-tab:hover {
+  background: var(--red); border-color: var(--red); color: #fff;
+}
+.new-task-btn {
+  margin-left: auto;
+  background: var(--red); color: #fff;
+  border: none; border-radius: 8px;
+  font-family: 'Noto Sans TC', sans-serif; font-size: 13px;
+  padding: 8px 18px; cursor: pointer; transition: background 0.15s;
+  font-weight: 500;
+}
+.new-task-btn:hover { background: var(--red-light); }
+
+/* NEW TASK MODAL */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(26,0,0,0.5);
+  display: none; align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: #fff; border-radius: var(--radius-lg);
+  padding: 28px; width: 500px; max-width: 95vw;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+.modal-title { font-size: 16px; font-weight: 600; color: var(--ink); margin-bottom: 20px; }
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; letter-spacing: 0.04em; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; border: 1px solid rgba(0,0,0,0.15); border-radius: 8px;
+  padding: 9px 12px; font-family: 'Noto Sans TC', sans-serif; font-size: 13px;
+  color: var(--ink); background: #fff;
+  transition: border-color 0.15s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none; border-color: var(--red);
+}
+.form-textarea { resize: vertical; min-height: 80px; }
+.chip-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.chip {
+  background: rgba(139,0,0,0.08); color: var(--red);
+  border-radius: 14px; padding: 3px 10px;
+  font-size: 11px; display: flex; align-items: center; gap: 4px; cursor: pointer;
+}
+.chip-x { font-size: 14px; line-height: 1; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+.btn-cancel {
+  background: none; border: 1px solid var(--border); color: var(--muted);
+  font-family: 'Noto Sans TC', sans-serif; font-size: 13px;
+  padding: 8px 18px; border-radius: 8px; cursor: pointer;
+}
+.btn-submit {
+  background: var(--red); color: #fff; border: none;
+  font-family: 'Noto Sans TC', sans-serif; font-size: 13px; font-weight: 500;
+  padding: 8px 22px; border-radius: 8px; cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-submit:hover { background: var(--red-light); }
+
+/* ── ORG CHART PAGE ── */
+.org-placeholder {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 60px;
+  text-align: center; color: var(--muted);
+}
+.org-placeholder h3 { font-size: 16px; color: var(--ink); margin-bottom: 8px; }
+.org-placeholder p { font-size: 13px; }
+
+/* ── PERFORMANCE PAGE ── */
+.perf-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+  margin-bottom: 24px;
+}
+@media (max-width: 768px) { .perf-grid { grid-template-columns: 1fr 1fr; } }
+
+.branch-perf-card {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px;
+}
+.branch-perf-name {
+  font-size: 12px; color: var(--muted); letter-spacing: 0.06em; margin-bottom: 12px;
+}
+.branch-perf-revenue {
+  font-size: 28px; font-weight: 600; color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.branch-perf-unit { font-size: 13px; color: var(--muted); font-weight: 400; }
+.perf-bar-wrap { margin: 12px 0 4px; background: var(--surface-2); border-radius: 4px; height: 4px; overflow: hidden; }
+.perf-bar { height: 100%; background: var(--red); border-radius: 4px; transition: width 0.6s ease; }
+.perf-bar.gold { background: var(--gold); }
+.perf-target { font-size: 11px; color: var(--muted); }
+.perf-target span { color: var(--red); font-weight: 500; }
+
+/* ── INVENTORY PAGE ── */
+.inv-table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+}
+.inv-table th {
+  text-align: left; padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px; color: var(--muted); letter-spacing: 0.06em; font-weight: 500;
+}
+.inv-table td { padding: 12px 16px; border-bottom: 1px solid rgba(0,0,0,0.04); }
+.inv-table tr:last-child td { border-bottom: none; }
+.inv-table tr:hover td { background: rgba(139,0,0,0.02); }
+.stock-dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  margin-right: 6px; vertical-align: middle;
+}
+.stock-ok { background: #4A7C59; }
+.stock-low { background: #E8A400; }
+.stock-out { background: var(--red); }
+
+/* ── ROSTER PAGE ── */
+.roster-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;
+}
+.roster-day-header {
+  text-align: center; font-size: 11px; color: var(--muted);
+  padding: 8px 0; letter-spacing: 0.04em;
+}
+.roster-cell {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 10px 8px; min-height: 80px;
+}
+.roster-shift {
+  background: rgba(139,0,0,0.08);
+  border-left: 2px solid var(--red);
+  border-radius: 4px; padding: 4px 6px; margin-bottom: 4px;
+  font-size: 11px; color: var(--red);
+}
+.roster-shift.afternoon { background: rgba(201,168,76,0.1); border-color: var(--gold); color: #8B6914; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  main { padding: 16px; }
+  .content-grid { grid-template-columns: 1fr; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── UTIL ── */
+.badge {
+  display: inline-block; font-size: 10px; padding: 2px 8px;
+  border-radius: 10px; font-weight: 500;
+}
+.badge-red { background: rgba(139,0,0,0.1); color: var(--red); }
+.badge-gold { background: rgba(201,168,76,0.15); color: #8B6914; }
+.badge-green { background: rgba(74,124,89,0.12); color: #4A7C59; }
+
+.tag {
+  display: inline-block; font-size: 10px; padding: 1px 7px;
+  border-radius: 3px; letter-spacing: 0.04em;
+}
+.tag-hq { background: rgba(139,0,0,0.08); color: var(--red); }
+.tag-jubei { background: rgba(201,168,76,0.12); color: #8B6914; }
+.tag-taipei { background: rgba(46,109,164,0.1); color: #2E6DA4; }
+.tag-taichung { background: rgba(74,124,89,0.1); color: #4A7C59; }
+
+.gold-quote {
+  border-left: 3px solid var(--gold);
+  padding: 10px 16px;
+  background: rgba(201,168,76,0.06);
+  border-radius: 0 8px 8px 0;
+  font-size: 12px; color: var(--muted);
+  font-style: italic; margin-bottom: 20px;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ LOGIN ═══════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">深紅</div>
+    <div class="login-sub">SHENGRED HOTPOT</div>
+    <div class="login-divider"></div>
+    <div class="login-slogan">嚴選食材・湯底制勝</div>
+    <button id="google-signin-btn" onclick="handleGoogleSignIn()">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#fff" d="M9 3.48c1.69 0 2.83.73 3.48 1.34l2.54-2.48C13.46.89 11.43 0 9 0 5.48 0 2.44 2.02.96 4.96l2.91 2.26C4.6 5.05 6.62 3.48 9 3.48z"/><path fill="rgba(255,255,255,0.7)" d="M17.64 9.2c0-.74-.06-1.28-.19-1.84H9v3.34h4.96c-.1.83-.64 2.08-1.84 2.92l2.84 2.2c1.7-1.57 2.68-3.88 2.68-6.62z"/><path fill="rgba(255,255,255,0.5)" d="M3.88 10.78A5.54 5.54 0 0 1 3.58 9c0-.62.11-1.22.29-1.78L.96 4.96A9 9 0 0 0 0 9c0 1.45.35 2.82.96 4.04l2.92-2.26z"/><path fill="rgba(255,255,255,0.4)" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.84-2.2c-.76.53-1.78.9-3.12.9-2.38 0-4.4-1.57-5.12-3.74L.87 13.04C2.34 15.98 5.48 18 9 18z"/></svg>
+      以 Google 帳號登入
+    </button>
+    <div class="login-note">僅限 @shengred.com 帳號</div>
+  </div>
+</div>
+
+<!-- ═══════════ TOPBAR ═══════════ -->
+<header class="topbar">
+  <span class="topbar-brand">深紅</span>
+  <span class="topbar-tagline">WORKSPACE</span>
+  <nav class="topbar-nav">
+    <button class="nav-btn active" onclick="showPage('dashboard', this)">首頁</button>
+    <button class="nav-btn" onclick="showPage('tasks', this)">待辦</button>
+    <button class="nav-btn" onclick="showPage('performance', this)">業績</button>
+    <button class="nav-btn" onclick="showPage('inventory', this)">庫存</button>
+    <button class="nav-btn" onclick="showPage('roster', this)">排班</button>
+    <button class="nav-btn" onclick="showPage('org', this)">組織圖</button>
+    <button class="nav-btn" onclick="showPage('crm', this)">CRM</button>
+  </nav>
+  <div class="topbar-sep"></div>
+  <div class="user-chip" onclick="handleLogout()">
+    <div class="user-avatar" id="user-avatar">-</div>
+    <span class="user-name" id="user-name">未登入</span>
+  </div>
+</header>
+
+<!-- ═══════════ BRANCH BAR ═══════════ -->
+<div class="branch-bar">
+  <span class="branch-label">門市</span>
+  <button class="branch-btn active" onclick="setBranch('all', this)">全門市</button>
+  <button class="branch-btn" onclick="setBranch('jubei', this)">竹北</button>
+  <button class="branch-btn" onclick="setBranch('taipei', this)">台北</button>
+  <button class="branch-btn" onclick="setBranch('taichung', this)">台中</button>
+</div>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<main>
+
+  <!-- ── DASHBOARD ── -->
+  <div id="page-dashboard" class="page active">
+    <div class="greeting-row">
+      <div class="greeting-text">
+        <h2 id="greeting-msg">晚安，歡迎回來</h2>
+        <p>嚴選食材・湯底制勝</p>
+      </div>
+      <div class="date-chip">
+        <strong id="today-date">—</strong>
+        <span id="today-weekday">—</span>
+      </div>
+    </div>
+
+    <div class="gold-quote" id="daily-quote">「品質是最好的廣告。」</div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">今日總業績</div>
+        <div class="stat-value">$<span id="stat-revenue">—</span></div>
+        <div class="stat-sub">三店合計</div>
+      </div>
+      <div class="stat-card gold">
+        <div class="stat-label">未結待辦</div>
+        <div class="stat-value" id="stat-tasks">0</div>
+        <div class="stat-sub">指派給我</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-label">今日來客</div>
+        <div class="stat-value">—</div>
+        <div class="stat-sub">人次</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-label">食材警示</div>
+        <div class="stat-value" id="stat-stock">0</div>
+        <div class="stat-sub">項偏低</div>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <div>
+        <!-- TOP TASKS -->
+        <div class="section-card" style="margin-bottom: 20px;">
+          <div class="section-header">
+            <span class="section-title">📋 我的待辦（最新 5 筆）</span>
+            <button class="section-action" onclick="showPage('tasks', null)">全部 →</button>
+          </div>
+          <div id="dash-task-list">
+            <div class="empty-state">目前沒有待辦事項</div>
+          </div>
+        </div>
+
+        <!-- SCHEDULE -->
+        <div class="section-card">
+          <div class="section-header">
+            <span class="section-title">📅 今日行程</span>
+          </div>
+          <div class="schedule-item">
+            <span class="schedule-time">10:00</span>
+            <div class="schedule-dot"></div>
+            <div>
+              <div class="schedule-text">食材驗收 — 牛肉、毛肚、鴨腸</div>
+              <div class="schedule-branch">竹北店</div>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <span class="schedule-time">14:00</span>
+            <div class="schedule-dot" style="background: var(--red)"></div>
+            <div>
+              <div class="schedule-text">週例會（全管理層）</div>
+              <div class="schedule-branch">視訊</div>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <span class="schedule-time">17:00</span>
+            <div class="schedule-dot"></div>
+            <div>
+              <div class="schedule-text">台中店試菜：新款麻醬底</div>
+              <div class="schedule-branch">台中店</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div>
+        <div class="section-card" style="margin-bottom: 16px;">
+          <div class="section-header">
+            <span class="section-title">⚡ 快速入口</span>
+          </div>
+          <div class="quick-grid">
+            <div class="quick-btn" onclick="showPage('tasks', null)">
+              <div class="quick-icon">📋</div>
+              <div class="quick-label">新增待辦</div>
+            </div>
+            <div class="quick-btn" onclick="showPage('performance', null)">
+              <div class="quick-icon">📊</div>
+              <div class="quick-label">業績回報</div>
+            </div>
+            <div class="quick-btn" onclick="showPage('inventory', null)">
+              <div class="quick-icon">🥩</div>
+              <div class="quick-label">庫存盤點</div>
+            </div>
+            <div class="quick-btn" onclick="showPage('roster', null)">
+              <div class="quick-icon">🗓</div>
+              <div class="quick-label">查看排班</div>
+            </div>
+            <div class="quick-btn" onclick="showPage('crm', null)">
+              <div class="quick-icon">👥</div>
+              <div class="quick-label">客戶追蹤</div>
+            </div>
+            <div class="quick-btn" onclick="showPage('org', null)">
+              <div class="quick-icon">🏢</div>
+              <div class="quick-label">組織圖</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BRANCH QUICK STATS -->
+        <div class="section-card">
+          <div class="section-header">
+            <span class="section-title">🔴 門市狀態</span>
+          </div>
+          <div style="padding: 12px 16px; border-bottom: 1px solid rgba(0,0,0,0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-size: 13px; color: var(--ink);">竹北店</span>
+              <span class="badge badge-green">營業中</span>
+            </div>
+            <div class="perf-bar-wrap"><div class="perf-bar" style="width: 72%"></div></div>
+            <div class="perf-target">今日目標達成 <span>72%</span></div>
+          </div>
+          <div style="padding: 12px 16px; border-bottom: 1px solid rgba(0,0,0,0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-size: 13px; color: var(--ink);">台北店</span>
+              <span class="badge badge-green">營業中</span>
+            </div>
+            <div class="perf-bar-wrap"><div class="perf-bar gold" style="width: 58%"></div></div>
+            <div class="perf-target">今日目標達成 <span>58%</span></div>
+          </div>
+          <div style="padding: 12px 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-size: 13px; color: var(--ink);">台中店</span>
+              <span class="badge badge-gold">準備中</span>
+            </div>
+            <div class="perf-bar-wrap"><div class="perf-bar" style="width: 0%"></div></div>
+            <div class="perf-target">預計 17:30 開始</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TASKS PAGE ── -->
+  <div id="page-tasks" class="page">
+    <div class="task-toolbar">
+      <button class="task-tab active" onclick="filterTasks('inbox', this)">📥 收件匣</button>
+      <button class="task-tab" onclick="filterTasks('sent', this)">📤 已派出</button>
+      <button class="task-tab" onclick="filterTasks('done', this)">✅ 已結案</button>
+      <button class="new-task-btn" onclick="openModal()">＋ 新增待辦</button>
+    </div>
+    <div class="section-card">
+      <div id="task-list-container">
+        <div class="empty-state">目前沒有待辦事項</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PERFORMANCE PAGE ── -->
+  <div id="page-performance" class="page">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+      <h2 style="font-family: 'Noto Serif TC', serif; font-size: 18px; color: var(--ink);">業績看板</h2>
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <button class="task-tab active" onclick="setPerfPeriod('today', this)">今天</button>
+        <button class="task-tab" onclick="setPerfPeriod('week', this)">本週</button>
+        <button class="task-tab" onclick="setPerfPeriod('month', this)">本月</button>
+        <button class="new-task-btn" onclick="openPerfModal()" style="margin-left: 8px;">＋ 回報日報</button>
+      </div>
+    </div>
+
+    <!-- 三店營業額卡片 -->
+    <div class="perf-grid" style="margin-bottom: 20px;">
+      <div class="branch-perf-card">
+        <div class="branch-perf-name">民權店 MINQUAN</div>
+        <div class="branch-perf-revenue" id="perf-rev-minquan">$<span>—</span> <span class="branch-perf-unit">元</span></div>
+        <div class="perf-bar-wrap" style="margin-top: 14px;"><div class="perf-bar" id="bar-minquan" style="width: 0%"></div></div>
+        <div class="perf-target" id="target-minquan">尚無資料</div>
+      </div>
+      <div class="branch-perf-card">
+        <div class="branch-perf-name">竹北店 JUBEI</div>
+        <div class="branch-perf-revenue" id="perf-rev-jubei">$<span>—</span> <span class="branch-perf-unit">元</span></div>
+        <div class="perf-bar-wrap" style="margin-top: 14px;"><div class="perf-bar gold" id="bar-jubei" style="width: 0%"></div></div>
+        <div class="perf-target" id="target-jubei">尚無資料</div>
+      </div>
+      <div class="branch-perf-card">
+        <div class="branch-perf-name">崇德店 CHONGDE</div>
+        <div class="branch-perf-revenue" id="perf-rev-chongde">$<span>—</span> <span class="branch-perf-unit">元</span></div>
+        <div class="perf-bar-wrap" style="margin-top: 14px;"><div class="perf-bar" id="bar-chongde" style="width: 0%"></div></div>
+        <div class="perf-target" id="target-chongde">尚無資料</div>
+      </div>
+    </div>
+
+    <!-- 關鍵指標橫列 -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px;">
+      <div class="stat-card" style="--accent: var(--red);">
+        <div class="stat-label">總來客組數</div>
+        <div class="stat-value" id="kpi-groups">—</div>
+        <div class="stat-sub">三店合計</div>
+      </div>
+      <div class="stat-card" style="--accent: var(--gold);">
+        <div class="stat-label">平均客單價</div>
+        <div class="stat-value" id="kpi-avg">—</div>
+        <div class="stat-sub">元／組</div>
+      </div>
+      <div class="stat-card" style="--accent: #4A7C59;">
+        <div class="stat-label">三倍送達成</div>
+        <div class="stat-value" id="kpi-triple">—</div>
+        <div class="stat-sub">加入／總組數</div>
+      </div>
+      <div class="stat-card" style="--accent: #2E6DA4;">
+        <div class="stat-label">1200會員達成</div>
+        <div class="stat-value" id="kpi-sub">—</div>
+        <div class="stat-sub">加入／總組數</div>
+      </div>
+      <div class="stat-card" style="--accent: #8B6914;">
+        <div class="stat-label">平均生產性</div>
+        <div class="stat-value" id="kpi-prod">—</div>
+        <div class="stat-sub">工時／來客</div>
+      </div>
+      <div class="stat-card" style="--accent: #7A3B3B;">
+        <div class="stat-label">平均成本率</div>
+        <div class="stat-value" id="kpi-cost">—</div>
+        <div class="stat-sub">人力成本／營業額</div>
+      </div>
+    </div>
+
+    <!-- 日報明細 -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title">📋 日報明細</span>
+        <span style="font-size: 11px; color: var(--muted);">點右上「回報日報」新增</span>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="inv-table" style="min-width: 980px;">
+          <thead>
+            <tr>
+              <th>日期</th><th>門市</th><th>時段</th>
+              <th>營業額</th><th>來客組</th><th>客單價</th>
+              <th>人力成本</th><th>成本率</th>
+              <th>三倍送組數</th><th>三倍送達成%</th>
+              <th>1200加入</th><th>1200達成%</th>
+              <th>使用工時</th><th>生產性</th>
+              <th>加班</th><th>備註</th>
+            </tr>
+          </thead>
+          <tbody id="perf-tbody">
+            <tr><td colspan="16" style="text-align:center; padding:32px; color:var(--muted); font-size:13px;">尚無回報資料，點右上「回報日報」開始</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── INVENTORY PAGE ── -->
+  <div id="page-inventory" class="page">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+      <h2 style="font-family: 'Noto Serif TC', serif; font-size: 18px; color: var(--ink);">食材庫存</h2>
+      <button class="new-task-btn" onclick="alert('開發中')">＋ 更新庫存</button>
+    </div>
+    <div class="section-card">
+      <table class="inv-table">
+        <thead>
+          <tr>
+            <th>食材</th>
+            <th>類別</th>
+            <th>現有量</th>
+            <th>安全庫存</th>
+            <th>狀態</th>
+            <th>門市</th>
+            <th>最後更新</th>
+          </tr>
+        </thead>
+        <tbody id="inv-tbody">
+          <tr>
+            <td>美國牛五花</td><td>牛肉類</td><td>48 kg</td><td>30 kg</td>
+            <td><span class="stock-dot stock-ok"></span>充足</td>
+            <td><span class="tag tag-jubei">竹北</span></td>
+            <td>今日 08:30</td>
+          </tr>
+          <tr>
+            <td>澳洲毛肚</td><td>內臟類</td><td>12 kg</td><td>20 kg</td>
+            <td><span class="stock-dot stock-low"></span>偏低</td>
+            <td><span class="tag tag-jubei">竹北</span></td>
+            <td>今日 08:30</td>
+          </tr>
+          <tr>
+            <td>鮮鴨腸</td><td>內臟類</td><td>0 kg</td><td>15 kg</td>
+            <td><span class="stock-dot stock-out"></span>缺貨</td>
+            <td><span class="tag tag-taipei">台北</span></td>
+            <td>昨日 22:00</td>
+          </tr>
+          <tr>
+            <td>澳洲牛舌</td><td>牛肉類</td><td>25 kg</td><td>20 kg</td>
+            <td><span class="stock-dot stock-ok"></span>充足</td>
+            <td><span class="tag tag-taipei">台北</span></td>
+            <td>今日 09:00</td>
+          </tr>
+          <tr>
+            <td>豬腦花</td><td>豬肉類</td><td>8 kg</td><td>10 kg</td>
+            <td><span class="stock-dot stock-low"></span>偏低</td>
+            <td><span class="tag tag-jubei">竹北</span></td>
+            <td>今日 08:30</td>
+          </tr>
+          <tr>
+            <td>麻辣湯底（包）</td><td>湯底</td><td>120 包</td><td>60 包</td>
+            <td><span class="stock-dot stock-ok"></span>充足</td>
+            <td><span class="tag tag-hq">總部</span></td>
+            <td>昨日 18:00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── ROSTER PAGE ── -->
+  <div id="page-roster" class="page">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+      <h2 style="font-family: 'Noto Serif TC', serif; font-size: 18px; color: var(--ink);">班表管理</h2>
+      <div style="display: flex; gap: 8px;">
+        <button class="task-tab active">本週</button>
+        <button class="task-tab">下週</button>
+      </div>
+    </div>
+    <div class="section-card" style="padding: 16px;">
+      <div class="roster-grid">
+        <div class="roster-day-header">一</div>
+        <div class="roster-day-header">二</div>
+        <div class="roster-day-header">三</div>
+        <div class="roster-day-header">四</div>
+        <div class="roster-day-header">五</div>
+        <div class="roster-day-header">六</div>
+        <div class="roster-day-header">日</div>
+
+        <div class="roster-cell">
+          <div class="roster-shift">王小明<br>11–15</div>
+          <div class="roster-shift afternoon">陳美玲<br>17–22</div>
+        </div>
+        <div class="roster-cell">
+          <div class="roster-shift">李志豪<br>11–15</div>
+        </div>
+        <div class="roster-cell">
+          <div class="roster-shift">王小明<br>11–15</div>
+          <div class="roster-shift afternoon">林怡君<br>17–22</div>
+        </div>
+        <div class="roster-cell">
+          <div class="roster-shift afternoon">陳美玲<br>17–22</div>
+        </div>
+        <div class="roster-cell">
+          <div class="roster-shift">李志豪<br>11–15</div>
+          <div class="roster-shift afternoon">林怡君<br>17–22</div>
+        </div>
+        <div class="roster-cell">
+          <div class="roster-shift">王小明<br>10–16</div>
+          <div class="roster-shift afternoon">陳美玲<br>16–22</div>
+        </div>
+        <div class="roster-cell">
+          <div class="roster-shift afternoon">李志豪<br>17–22</div>
+        </div>
+      </div>
+      <div style="margin-top: 14px; display: flex; gap: 12px; font-size: 11px; color: var(--muted);">
+        <span><span class="stock-dot stock-ok" style="margin-right:4px"></span>午班</span>
+        <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-right:4px;vertical-align:middle"></span>晚班</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ORG PAGE ── -->
+  <div id="page-org" class="page">
+    <div class="org-placeholder">
+      <h3>組織圖</h3>
+      <p>Phase 3 建置中。需要 Google OAuth 帳號綁定完成後才能啟用 AI 編輯功能。</p>
+      <br>
+      <p style="font-size: 11px;">昇鴻購物有限公司 · 深紅鍋物品牌</p>
+    </div>
+  </div>
+
+  <!-- ── CRM PAGE ── -->
+  <div id="page-crm" class="page">
+    <div class="org-placeholder">
+      <h3>客戶 CRM</h3>
+      <p>Phase 4 建置中。整合 Manychat 串接後即可啟用。</p>
+    </div>
+  </div>
+
+</main>
+
+<!-- ═══════════ NEW TASK MODAL ═══════════ -->
+<div class="modal-overlay" id="task-modal">
+  <div class="modal">
+    <div class="modal-title">新增待辦事項</div>
+    <div class="form-group">
+      <label class="form-label">收件人（可多人）</label>
+      <input type="text" class="form-input" id="task-to-input" placeholder="輸入姓名或Email後按 Enter" onkeydown="addRecipient(event)">
+      <div class="chip-container" id="recipient-chips"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">待辦內容</label>
+      <textarea class="form-textarea" id="task-msg" placeholder="說明需要完成什麼事..."></textarea>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+      <div class="form-group">
+        <label class="form-label">優先度</label>
+        <select class="form-select" id="task-priority">
+          <option value="normal">一般</option>
+          <option value="urgent">緊急</option>
+          <option value="low">低</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">門市</label>
+        <select class="form-select" id="task-branch">
+          <option value="">全部</option>
+          <option value="jubei">竹北</option>
+          <option value="taipei">台北</option>
+          <option value="taichung">台中</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">取消</button>
+      <button class="btn-submit" onclick="submitTask()">送出待辦</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PERF MODAL ═══════════ -->
+<div class="modal-overlay" id="perf-modal">
+  <div class="modal" style="width: 620px; max-height: 90vh; overflow-y: auto;">
+    <div class="modal-title">📊 回報日報</div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+      <div class="form-group">
+        <label class="form-label">日期</label>
+        <input type="date" class="form-input" id="pf-date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">門市</label>
+        <select class="form-select" id="pf-branch">
+          <option value="minquan">民權店</option>
+          <option value="jubei">竹北店</option>
+          <option value="chongde">崇德店</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">時段</label>
+        <select class="form-select" id="pf-period">
+          <option value="lunch">午餐（11:30–14:00）</option>
+          <option value="dinner">晚餐（17:30–21:30）</option>
+          <option value="full">全日</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="background: rgba(139,0,0,0.04); border-radius: 8px; padding: 14px 16px; margin-bottom: 14px;">
+      <div style="font-size: 11px; color: var(--muted); letter-spacing: 0.06em; margin-bottom: 10px;">營業數字</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-group">
+          <label class="form-label">營業額（元）＊</label>
+          <input type="number" class="form-input" id="pf-revenue" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">來客組數＊</label>
+          <input type="number" class="form-input" id="pf-groups" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">人力成本（元）</label>
+          <input type="number" class="form-input" id="pf-labor" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">使用工時（hr）</label>
+          <input type="number" class="form-input" id="pf-hours" placeholder="0" step="0.5">
+        </div>
+      </div>
+    </div>
+
+    <div style="background: rgba(201,168,76,0.06); border-radius: 8px; padding: 14px 16px; margin-bottom: 14px;">
+      <div style="font-size: 11px; color: var(--muted); letter-spacing: 0.06em; margin-bottom: 10px;">活動達成（加入組數）</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="form-group">
+          <label class="form-label">三倍送加入組數</label>
+          <input type="number" class="form-input" id="pf-triple" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">1200會員加入組數</label>
+          <input type="number" class="form-input" id="pf-sub1200" placeholder="0">
+        </div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+      <div class="form-group">
+        <label class="form-label">加班回報</label>
+        <input type="text" class="form-input" id="pf-overtime" placeholder="例：王小明 +2hr">
+      </div>
+      <div class="form-group">
+        <label class="form-label">備註</label>
+        <input type="text" class="form-input" id="pf-note" placeholder="特殊狀況、活動說明...">
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closePerfModal()">取消</button>
+      <button class="btn-submit" onclick="submitPerf()">送出日報</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SCRIPTS ═══════════ -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+// ── CONFIG ──
+const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
+const ALLOWED_DOMAIN = 'shengred.com';
+
+// ── STATE ──
+let currentUser = null;
+let currentBranch = 'all';
+let tasks = JSON.parse(localStorage.getItem('sr_tasks') || '[]');
+let recipients = [];
+
+// ── AUTH ──
+function handleGoogleSignIn() {
+  const isDev = GOOGLE_CLIENT_ID.startsWith('YOUR_');
+  if (isDev || typeof google === 'undefined') {
+    devLogin();
+    return;
+  }
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: onGoogleToken,
+    auto_select: false,
+  });
+  google.accounts.id.prompt();
+}
+
+function devLogin() {
+  loginSuccess({
+    name: '林總監',
+    email: 'admin@shengred.com',
+    initials: '林'
+  });
+}
+
+function onGoogleToken(response) {
+  const p = decodeJwt(response.credential);
+  if (!p || !p.email) return alert('驗證失敗');
+  if (!p.email.toLowerCase().endsWith('@' + ALLOWED_DOMAIN)) {
+    return alert('僅限 @' + ALLOWED_DOMAIN + ' 帳號');
+  }
+  loginSuccess({ name: p.name, email: p.email, initials: getInitials(p.name) });
+}
+
+function decodeJwt(token) {
+  try {
+    const b64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = b64 + '='.repeat((4 - b64.length % 4) % 4);
+    const bin = atob(padded);
+    const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+    return JSON.parse(new TextDecoder('utf-8').decode(bytes));
+  } catch { return null; }
+}
+
+function getInitials(name) {
+  if (!name) return '?';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+function loginSuccess(user) {
+  currentUser = user;
+  document.getElementById('user-name').textContent = user.name;
+  document.getElementById('user-avatar').textContent = getInitials(user.name);
+  sessionStorage.setItem('sr_user', JSON.stringify(user));
+  const ls = document.getElementById('login-screen');
+  ls.classList.add('hidden');
+  setTimeout(() => ls.style.display = 'none', 600);
+  initDashboard();
+}
+
+function handleLogout() {
+  if (!confirm('確定要登出？')) return;
+  currentUser = null;
+  sessionStorage.removeItem('sr_user');
+  location.reload();
+}
+
+// ── INIT ──
+function initDashboard() {
+  setGreeting();
+  setDate();
+  setDailyQuote();
+  renderDashTasks();
+  updateStatCounts();
+}
+
+function setGreeting() {
+  const h = new Date().getHours();
+  const greet = h < 12 ? '早安' : h < 18 ? '午安' : '晚安';
+  const name = currentUser ? currentUser.name.replace(/@.*/, '') : '';
+  document.getElementById('greeting-msg').textContent = greet + '，' + (name || '歡迎回來');
+}
+
+function setDate() {
+  const d = new Date();
+  const weeks = ['日','一','二','三','四','五','六'];
+  document.getElementById('today-date').textContent =
+    d.getFullYear() + '/' + (d.getMonth()+1).toString().padStart(2,'0') + '/' + d.getDate().toString().padStart(2,'0');
+  document.getElementById('today-weekday').textContent = '週' + weeks[d.getDay()];
+}
+
+const quotes = [
+  '「品質是最好的廣告。」',
+  '「用料理說話，比任何行銷都有力。」',
+  '「嚴選食材，是對客人最真誠的承諾。」',
+  '「細節決定品質，湯底決定回頭率。」',
+  '「每一鍋，都是品牌的名片。」',
+];
+function setDailyQuote() {
+  const idx = new Date().getDay() % quotes.length;
+  document.getElementById('daily-quote').textContent = quotes[idx];
+}
+
+// ── NAVIGATION ──
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (id === 'tasks') renderTaskList();
+}
+
+function setBranch(b, btn) {
+  currentBranch = b;
+  document.querySelectorAll('.branch-btn').forEach(x => x.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── TASKS ──
+let taskFilter = 'inbox';
+
+function filterTasks(f, btn) {
+  taskFilter = f;
+  document.querySelectorAll('.task-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTaskList();
+}
+
+function openModal() {
+  recipients = [];
+  document.getElementById('task-to-input').value = '';
+  document.getElementById('task-msg').value = '';
+  document.getElementById('recipient-chips').innerHTML = '';
+  document.getElementById('task-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('task-modal').classList.remove('open');
+}
+
+function addRecipient(e) {
+  if (e.key !== 'Enter') return;
+  const val = e.target.value.trim();
+  if (!val) return;
+  recipients.push(val);
+  e.target.value = '';
+  renderChips();
+}
+
+function renderChips() {
+  const c = document.getElementById('recipient-chips');
+  c.innerHTML = recipients.map((r, i) =>
+    `<div class="chip">${r} <span class="chip-x" onclick="removeRecipient(${i})">×</span></div>`
+  ).join('');
+}
+
+function removeRecipient(i) {
+  recipients.splice(i, 1);
+  renderChips();
+}
+
+function submitTask() {
+  const msg = document.getElementById('task-msg').value.trim();
+  if (!msg) return alert('請填寫待辦內容');
+  if (recipients.length === 0) recipients.push(currentUser ? currentUser.email : 'admin@shengred.com');
+
+  const task = {
+    id: Date.now(),
+    from: currentUser ? currentUser.name : '未知',
+    from_email: currentUser ? currentUser.email : '',
+    to: recipients.slice(),
+    msg,
+    priority: document.getElementById('task-priority').value,
+    branch: document.getElementById('task-branch').value,
+    created_at: new Date().toISOString(),
+    done: false,
+  };
+
+  tasks.unshift(task);
+  localStorage.setItem('sr_tasks', JSON.stringify(tasks));
+  closeModal();
+  renderTaskList();
+  renderDashTasks();
+  updateStatCounts();
+}
+
+function toggleTask(id) {
+  const t = tasks.find(x => x.id === id);
+  if (t) { t.done = !t.done; localStorage.setItem('sr_tasks', JSON.stringify(tasks)); }
+  renderTaskList();
+  renderDashTasks();
+  updateStatCounts();
+}
+
+function formatTime(iso) {
+  const d = new Date(iso);
+  const now = new Date();
+  const diff = (now - d) / 60000;
+  if (diff < 1) return '剛才';
+  if (diff < 60) return Math.round(diff) + ' 分鐘前';
+  if (diff < 1440) return Math.round(diff / 60) + ' 小時前';
+  return Math.round(diff / 1440) + ' 天前';
+}
+
+function renderTaskList() {
+  const me = currentUser ? currentUser.email : '';
+  let filtered = tasks;
+  if (taskFilter === 'inbox') filtered = tasks.filter(t => !t.done && t.to.includes(me));
+  else if (taskFilter === 'sent') filtered = tasks.filter(t => t.from_email === me && !t.done);
+  else filtered = tasks.filter(t => t.done);
+
+  const el = document.getElementById('task-list-container');
+  if (!filtered.length) { el.innerHTML = '<div class="empty-state">目前沒有待辦事項</div>'; return; }
+  el.innerHTML = filtered.map(t => `
+    <div class="task-item" onclick="toggleTask(${t.id})">
+      <div class="task-check ${t.done ? 'done' : ''}"></div>
+      <div class="task-body">
+        <div class="task-msg ${t.done ? 'done' : ''}">${t.msg}</div>
+        <div class="task-meta">
+          <span class="task-from">${t.from}</span>
+          ${t.priority === 'urgent' ? '<span class="task-badge urgent">緊急</span>' : ''}
+          ${t.branch ? `<span class="task-badge">${branchName(t.branch)}</span>` : ''}
+          ${t.done ? '<span class="task-badge done">已結案</span>' : ''}
+          <span class="task-time">${formatTime(t.created_at)}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderDashTasks() {
+  const me = currentUser ? currentUser.email : '';
+  const inbox = tasks.filter(t => !t.done && t.to.includes(me)).slice(0, 5);
+  const el = document.getElementById('dash-task-list');
+  if (!inbox.length) { el.innerHTML = '<div class="empty-state">目前沒有待辦事項 🎉</div>'; return; }
+  el.innerHTML = inbox.map(t => `
+    <div class="task-item" onclick="toggleTask(${t.id})">
+      <div class="task-check"></div>
+      <div class="task-body">
+        <div class="task-msg">${t.msg}</div>
+        <div class="task-meta">
+          <span class="task-from">${t.from}</span>
+          ${t.priority === 'urgent' ? '<span class="task-badge urgent">緊急</span>' : ''}
+          <span class="task-time">${formatTime(t.created_at)}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateStatCounts() {
+  const me = currentUser ? currentUser.email : '';
+  const open = tasks.filter(t => !t.done && t.to.includes(me)).length;
+  document.getElementById('stat-tasks').textContent = open;
+  const lowStock = 2; // 靜態示範
+  document.getElementById('stat-stock').textContent = lowStock;
+}
+
+function branchName(b) {
+  return { minquan: '民權', jubei: '竹北', chongde: '崇德' }[b] || b;
+}
+
+// ── PERFORMANCE ──
+let perfReports = JSON.parse(localStorage.getItem('sr_perf') || '[]');
+let perfPeriod = 'today';
+
+function setPerfPeriod(p, btn) {
+  perfPeriod = p;
+  document.querySelectorAll('#page-performance .task-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPerfPage();
+}
+
+function openPerfModal() {
+  const today = new Date().toISOString().slice(0,10);
+  document.getElementById('pf-date').value = today;
+  document.getElementById('pf-branch').value = 'minquan';
+  document.getElementById('pf-period').value = 'dinner';
+  ['pf-revenue','pf-groups','pf-labor','pf-triple','pf-sub1200','pf-hours','pf-overtime','pf-note'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('perf-modal').classList.add('open');
+}
+
+function closePerfModal() {
+  document.getElementById('perf-modal').classList.remove('open');
+}
+
+function submitPerf() {
+  const revenue = parseFloat(document.getElementById('pf-revenue').value) || 0;
+  const groups = parseInt(document.getElementById('pf-groups').value) || 0;
+  const labor = parseFloat(document.getElementById('pf-labor').value) || 0;
+  const triple = parseInt(document.getElementById('pf-triple').value) || 0;
+  const sub1200 = parseInt(document.getElementById('pf-sub1200').value) || 0;
+  const hours = parseFloat(document.getElementById('pf-hours').value) || 0;
+
+  if (!revenue || !groups) { alert('營業額和來客組數為必填'); return; }
+
+  const rec = {
+    id: Date.now(),
+    date: document.getElementById('pf-date').value,
+    branch: document.getElementById('pf-branch').value,
+    period: document.getElementById('pf-period').value,
+    revenue,
+    groups,
+    avg: groups ? Math.round(revenue / groups) : 0,
+    labor,
+    cost_rate: revenue ? parseFloat((labor / revenue * 100).toFixed(1)) : 0,
+    triple,
+    triple_rate: groups ? parseFloat((triple / groups * 100).toFixed(1)) : 0,
+    sub1200,
+    sub_rate: groups ? parseFloat((sub1200 / groups * 100).toFixed(1)) : 0,
+    hours,
+    productivity: hours && groups ? parseFloat((hours / groups).toFixed(2)) : 0,
+    overtime: document.getElementById('pf-overtime').value,
+    note: document.getElementById('pf-note').value,
+    reporter: currentUser ? currentUser.name : '未知',
+    created_at: new Date().toISOString(),
+  };
+
+  perfReports.unshift(rec);
+  localStorage.setItem('sr_perf', JSON.stringify(perfReports));
+  closePerfModal();
+  renderPerfPage();
+}
+
+function branchLabel(b) {
+  return { minquan: '民權', jubei: '竹北', chongde: '崇德' }[b] || b;
+}
+function periodLabel(p) {
+  return { lunch: '午餐', dinner: '晚餐', full: '全日' }[p] || p;
+}
+
+function filterPerfData() {
+  const now = new Date();
+  return perfReports.filter(r => {
+    const d = new Date(r.date);
+    if (perfPeriod === 'today') return r.date === now.toISOString().slice(0,10);
+    if (perfPeriod === 'week') {
+      const day = now.getDay() || 7;
+      const mon = new Date(now); mon.setDate(now.getDate() - day + 1); mon.setHours(0,0,0,0);
+      return d >= mon;
+    }
+    if (perfPeriod === 'month') return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+    return true;
+  });
+}
+
+function renderPerfPage() {
+  const data = filterPerfData();
+
+  // 三店卡片
+  ['minquan','jubei','chongde'].forEach(b => {
+    const rows = data.filter(r => r.branch === b);
+    const rev = rows.reduce((s, r) => s + r.revenue, 0);
+    const revEl = document.getElementById('perf-rev-' + b);
+    if (revEl) revEl.innerHTML = '$<span>' + rev.toLocaleString() + '</span> <span class="branch-perf-unit">元</span>';
+    const tgt = 180000;
+    const pct = Math.min(100, Math.round(rev / tgt * 100));
+    const barEl = document.getElementById('bar-' + b);
+    if (barEl) barEl.style.width = pct + '%';
+    const tgtEl = document.getElementById('target-' + b);
+    if (tgtEl) tgtEl.innerHTML = rows.length ? '目標 $' + tgt.toLocaleString() + ' ｜達成率 <span>' + pct + '%</span>' : '尚無資料';
+  });
+
+  // KPI
+  const totalGroups = data.reduce((s, r) => s + r.groups, 0);
+  const totalRev = data.reduce((s, r) => s + r.revenue, 0);
+  const totalTriple = data.reduce((s, r) => s + r.triple, 0);
+  const totalSub = data.reduce((s, r) => s + r.sub1200, 0);
+  const totalLabor = data.reduce((s, r) => s + r.labor, 0);
+  const totalHours = data.reduce((s, r) => s + r.hours, 0);
+
+  document.getElementById('kpi-groups').textContent = totalGroups || '—';
+  document.getElementById('kpi-avg').textContent = totalGroups ? '$' + Math.round(totalRev / totalGroups).toLocaleString() : '—';
+  document.getElementById('kpi-triple').textContent = totalGroups ? (totalTriple / totalGroups * 100).toFixed(1) + '%' : '—';
+  document.getElementById('kpi-sub').textContent = totalGroups ? (totalSub / totalGroups * 100).toFixed(1) + '%' : '—';
+  document.getElementById('kpi-prod').textContent = totalGroups && totalHours ? (totalHours / totalGroups).toFixed(2) : '—';
+  document.getElementById('kpi-cost').textContent = totalRev && totalLabor ? (totalLabor / totalRev * 100).toFixed(1) + '%' : '—';
+
+  // 明細表
+  const tbody = document.getElementById('perf-tbody');
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="16" style="text-align:center;padding:32px;color:var(--muted);font-size:13px;">此區間尚無回報資料</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(r => `
+    <tr>
+      <td>${r.date}</td>
+      <td>${branchLabel(r.branch)}</td>
+      <td>${periodLabel(r.period)}</td>
+      <td>$${r.revenue.toLocaleString()}</td>
+      <td>${r.groups}</td>
+      <td>$${r.avg.toLocaleString()}</td>
+      <td>${r.labor ? '$' + r.labor.toLocaleString() : '—'}</td>
+      <td>${r.labor ? r.cost_rate + '%' : '—'}</td>
+      <td>${r.triple}</td>
+      <td>${r.triple_rate}%</td>
+      <td>${r.sub1200}</td>
+      <td>${r.sub_rate}%</td>
+      <td>${r.hours || '—'}</td>
+      <td>${r.productivity || '—'}</td>
+      <td>${r.overtime || '—'}</td>
+      <td style="color:var(--muted);font-size:12px;">${r.note || ''}</td>
+    </tr>
+  `).join('');
+}
+
+// ── AUTO LOGIN (session) ──
+window.addEventListener('load', () => {
+  const saved = sessionStorage.getItem('sr_user');
+  if (saved) {
+    try { loginSuccess(JSON.parse(saved)); } catch {}
+  }
+});
+
+// ── ESC to close modal ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); closePerfModal(); }
+});
+</script>
+</body>
+</html>
